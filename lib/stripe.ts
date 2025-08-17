@@ -29,7 +29,7 @@ export async function createPaymentIntent(amount: number, metadata: any) {
 }
 
 // Create checkout session for donations
-export async function createDonationCheckoutSession(amount: number, cause: string, message?: string) {
+export async function createDonationCheckoutSession(amount: number, cause: string, message: string | undefined) {
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -47,11 +47,11 @@ export async function createDonationCheckoutSession(amount: number, cause: strin
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/donations/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/donations`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/donations/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/donations`,
       metadata: {
         cause,
-        message,
+        message: message || '',
         type: 'donation',
       },
     })
